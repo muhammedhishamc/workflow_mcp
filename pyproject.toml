@@ -1,17 +1,17 @@
 [project]
 name = "workflow-mcp"
-version = "0.1.0"
-description = "Add your description here"
+version = "1.0.0"
+description = "A Model Context Protocol server for Workflow Engine API operations"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "httpx>=0.28.1",
     "mcp[cli]>=1.9.4",
+    "python-dotenv>=1.1.1",
 ]
 
 [project.scripts]
-workflow-mcp = "main:main"
-
+workflow-mcp = "main:run"
 
 [tool.uv]
 package = true

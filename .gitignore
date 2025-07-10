@@ -1,0 +1,6 @@
+.venv
+__pycache__/
+/workflow_mcp.egg-info/
+*.log
+.env*
+.vscode/
