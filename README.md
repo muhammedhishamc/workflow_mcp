@@ -46,7 +46,7 @@ A comprehensive Model Context Protocol (MCP) server for managing workflows, exec
   "mcpServers": {
     "workflow-engine": {
       "command": "uvx",
-      "args": ["git+https://github.com/muhammedhishamc/workflow_mcp"],
+      "args": ["git+https://github.com/muhammedhishamc/workflow_mcp.git"],
       "env": {
         "WORKFLOW_BASE_URL": "https://your-workflow-engine.com"
       }
@@ -60,5 +60,5 @@ A comprehensive Model Context Protocol (MCP) server for managing workflows, exec
 ## 🖥️ Adding to Claude Code
 
 ```
-claude mcp add workflow-engine -e WORKFLOW_BASE_URL=https://your-workflow-engine.com -- uvx git+https://github.com/muhammedhishamc/workflow_mcp
+claude mcp add workflow-engine -e WORKFLOW_BASE_URL=https://your-workflow-engine.com -- uvx git+https://github.com/muhammedhishamc/workflow_mcp.git
 ```
