@@ -1,6 +1,11 @@
-.venv
+# Python-generated files
 __pycache__/
-/workflow_mcp.egg-info/
-*.log
-.env*
-.vscode/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+.env
