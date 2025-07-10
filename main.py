@@ -22,8 +22,6 @@ from mcp.types import (
     ListToolsResult,
     Tool,
     TextContent,
-    ErrorCode,
-    McpError,
 )
 
 # Environment variable for base URL
@@ -503,10 +501,7 @@ async def make_http_request(
                 except:
                     error_detail = response.text
                 
-                raise McpError(
-                    code=ErrorCode.INTERNAL_ERROR,
-                    message=f"HTTP {response.status_code}: {error_detail}"
-                )
+                raise RuntimeError(f"HTTP {response.status_code}: {error_detail}")
             
             # Try to parse JSON response
             try:
@@ -516,15 +511,9 @@ async def make_http_request(
                 return {"message": response.text, "status_code": response.status_code}
                 
     except httpx.TimeoutException:
-        raise McpError(
-            code=ErrorCode.INTERNAL_ERROR,
-            message="Request timed out"
-        )
+        raise TimeoutError("Request timed out")
     except httpx.RequestError as e:
-        raise McpError(
-            code=ErrorCode.INTERNAL_ERROR,
-            message=f"Request failed: {str(e)}"
-        )
+        raise ConnectionError(f"Request failed: {str(e)}")
 
 def format_workflow_response(data: Dict[str, Any], title: str) -> str:
     """Format workflow response data for better readability."""
@@ -601,7 +590,7 @@ async def call_tool(request: CallToolRequest) -> CallToolResult:
             workflow_data = args.get("workflow_data")
             
             if not yaml_content and not workflow_data:
-                raise McpError(code=ErrorCode.INVALID_PARAMS, message="Either yaml_content or workflow_data is required")
+                raise ValueError("Either yaml_content or workflow_data is required")
             
             payload = {}
             if yaml_content:
@@ -622,7 +611,7 @@ async def call_tool(request: CallToolRequest) -> CallToolResult:
         elif tool_name == "get_workflow":
             workflow_id = args.get("workflow_id")
             if not workflow_id:
-                raise McpError(code=ErrorCode.INVALID_PARAMS, message="workflow_id is required")
+                raise ValueError("workflow_id is required")
             
             url = f"{API_BASE_URL}/workflows/{workflow_id}"
             result = await make_http_request("GET", url)
@@ -659,7 +648,7 @@ async def call_tool(request: CallToolRequest) -> CallToolResult:
         elif tool_name == "update_workflow":
             workflow_id = args.get("workflow_id")
             if not workflow_id:
-                raise McpError(code=ErrorCode.INVALID_PARAMS, message="workflow_id is required")
+                raise ValueError("workflow_id is required")
             
             # Remove workflow_id from args for the payload
             payload = {k: v for k, v in args.items() if k != "workflow_id"}
@@ -677,7 +666,7 @@ async def call_tool(request: CallToolRequest) -> CallToolResult:
         elif tool_name == "delete_workflow":
             workflow_id = args.get("workflow_id")
             if not workflow_id:
-                raise McpError(code=ErrorCode.INVALID_PARAMS, message="workflow_id is required")
+                raise ValueError("workflow_id is required")
             
             url = f"{API_BASE_URL}/workflows/{workflow_id}"
             result = await make_http_request("DELETE", url)
@@ -692,7 +681,7 @@ async def call_tool(request: CallToolRequest) -> CallToolResult:
         elif tool_name == "get_workflow_dashboard":
             workflow_id = args.get("workflow_id")
             if not workflow_id:
-                raise McpError(code=ErrorCode.INVALID_PARAMS, message="workflow_id is required")
+                raise ValueError("workflow_id is required")
             
             url = f"{API_BASE_URL}/workflows/{workflow_id}/dashboard"
             result = await make_http_request("GET", url)
@@ -707,7 +696,7 @@ async def call_tool(request: CallToolRequest) -> CallToolResult:
         elif tool_name == "validate_workflow_yaml":
             yaml_content = args.get("yaml_content")
             if not yaml_content:
-                raise McpError(code=ErrorCode.INVALID_PARAMS, message="yaml_content is required")
+                raise ValueError("yaml_content is required")
             
             payload = {"yaml_content": yaml_content}
             url = f"{API_BASE_URL}/validate"
@@ -727,7 +716,7 @@ async def call_tool(request: CallToolRequest) -> CallToolResult:
             inputs = args.get("inputs", {})
             
             if not workflow_id:
-                raise McpError(code=ErrorCode.INVALID_PARAMS, message="workflow_id is required")
+                raise ValueError("workflow_id is required")
             
             url = f"{API_BASE_URL}/workflows/{workflow_id}/execute"
             payload = {"inputs": inputs}
@@ -749,7 +738,7 @@ async def call_tool(request: CallToolRequest) -> CallToolResult:
         elif tool_name == "get_workflow_input_format":
             workflow_id = args.get("workflow_id")
             if not workflow_id:
-                raise McpError(code=ErrorCode.INVALID_PARAMS, message="workflow_id is required")
+                raise ValueError("workflow_id is required")
             
             url = f"{API_BASE_URL}/workflows/{workflow_id}"
             result = await make_http_request("GET", url)
@@ -786,7 +775,7 @@ async def call_tool(request: CallToolRequest) -> CallToolResult:
         elif tool_name == "get_execution_status":
             execution_id = args.get("execution_id")
             if not execution_id:
-                raise McpError(code=ErrorCode.INVALID_PARAMS, message="execution_id is required")
+                raise ValueError("execution_id is required")
             
             url = f"{API_BASE_URL}/executions/{execution_id}"
             result = await make_http_request("GET", url)
@@ -845,7 +834,7 @@ async def call_tool(request: CallToolRequest) -> CallToolResult:
         elif tool_name == "get_execution_logs":
             execution_id = args.get("execution_id")
             if not execution_id:
-                raise McpError(code=ErrorCode.INVALID_PARAMS, message="execution_id is required")
+                raise ValueError("execution_id is required")
             
             url = f"{API_BASE_URL}/executions/{execution_id}/logs"
             result = await make_http_request("GET", url)
@@ -862,10 +851,7 @@ async def call_tool(request: CallToolRequest) -> CallToolResult:
             task_id = args.get("task_id")
             
             if not execution_id or not task_id:
-                raise McpError(
-                    code=ErrorCode.INVALID_PARAMS, 
-                    message="Both execution_id and task_id are required"
-                )
+                raise ValueError("Both execution_id and task_id are required")
             
             url = f"{API_BASE_URL}/executions/{execution_id}/tasks/{task_id}"
             result = await make_http_request("GET", url)
@@ -896,7 +882,7 @@ async def call_tool(request: CallToolRequest) -> CallToolResult:
         elif tool_name == "get_workflow_execution_logs":
             workflow_id = args.get("workflow_id")
             if not workflow_id:
-                raise McpError(code=ErrorCode.INVALID_PARAMS, message="workflow_id is required")
+                raise ValueError("workflow_id is required")
             
             # Build query parameters
             params = {}
@@ -927,10 +913,7 @@ async def call_tool(request: CallToolRequest) -> CallToolResult:
             trigger_type = args.get("trigger_type")
             
             if not all([name, workflow_id, trigger_type]):
-                raise McpError(
-                    code=ErrorCode.INVALID_PARAMS, 
-                    message="name, workflow_id, and trigger_type are required"
-                )
+                raise ValueError("name, workflow_id, and trigger_type are required")
             
             url = f"{API_BASE_URL}/triggers"
             result = await make_http_request("POST", url, args)
@@ -969,7 +952,7 @@ async def call_tool(request: CallToolRequest) -> CallToolResult:
         elif tool_name == "get_trigger":
             trigger_id = args.get("trigger_id")
             if not trigger_id:
-                raise McpError(code=ErrorCode.INVALID_PARAMS, message="trigger_id is required")
+                raise ValueError("trigger_id is required")
             
             url = f"{API_BASE_URL}/triggers/{trigger_id}"
             result = await make_http_request("GET", url)
@@ -984,7 +967,7 @@ async def call_tool(request: CallToolRequest) -> CallToolResult:
         elif tool_name == "get_workflow_triggers":
             workflow_id = args.get("workflow_id")
             if not workflow_id:
-                raise McpError(code=ErrorCode.INVALID_PARAMS, message="workflow_id is required")
+                raise ValueError("workflow_id is required")
             
             url = f"{API_BASE_URL}/workflows/{workflow_id}/triggers"
             result = await make_http_request("GET", url)
@@ -999,7 +982,7 @@ async def call_tool(request: CallToolRequest) -> CallToolResult:
         elif tool_name == "update_trigger":
             trigger_id = args.get("trigger_id")
             if not trigger_id:
-                raise McpError(code=ErrorCode.INVALID_PARAMS, message="trigger_id is required")
+                raise ValueError("trigger_id is required")
             
             # Remove trigger_id from args for the payload
             payload = {k: v for k, v in args.items() if k != "trigger_id"}
@@ -1017,7 +1000,7 @@ async def call_tool(request: CallToolRequest) -> CallToolResult:
         elif tool_name == "delete_trigger":
             trigger_id = args.get("trigger_id")
             if not trigger_id:
-                raise McpError(code=ErrorCode.INVALID_PARAMS, message="trigger_id is required")
+                raise ValueError("trigger_id is required")
             
             url = f"{API_BASE_URL}/triggers/{trigger_id}"
             result = await make_http_request("DELETE", url)
@@ -1034,7 +1017,7 @@ async def call_tool(request: CallToolRequest) -> CallToolResult:
             inputs = args.get("inputs", {})
             
             if not trigger_id:
-                raise McpError(code=ErrorCode.INVALID_PARAMS, message="trigger_id is required")
+                raise ValueError("trigger_id is required")
             
             url = f"{API_BASE_URL}/triggers/{trigger_id}/execute"
             payload = {"inputs": inputs}
@@ -1069,7 +1052,7 @@ async def call_tool(request: CallToolRequest) -> CallToolResult:
         elif tool_name == "wait_for_execution_completion":
             execution_id = args.get("execution_id")
             if not execution_id:
-                raise McpError(code=ErrorCode.INVALID_PARAMS, message="execution_id is required")
+                raise ValueError("execution_id is required")
             
             poll_interval = args.get("poll_interval", 5)
             timeout = args.get("timeout", 300)
@@ -1140,20 +1123,14 @@ async def call_tool(request: CallToolRequest) -> CallToolResult:
             )
         
         else:
-            raise McpError(
-                code=ErrorCode.METHOD_NOT_FOUND,
-                message=f"Unknown tool: {tool_name}"
-            )
+            raise NotImplementedError(f"Unknown tool: {tool_name}")
     
-    except McpError:
-        # Re-raise MCP errors as-is
+    except (ValueError, NotImplementedError):
+        # Re-raise these specific errors as-is
         raise
     except Exception as e:
-        # Convert other exceptions to MCP errors
-        raise McpError(
-            code=ErrorCode.INTERNAL_ERROR,
-            message=f"Unexpected error in {request.params.name}: {str(e)}"
-        )
+        # Convert other exceptions to general runtime errors
+        raise RuntimeError(f"Unexpected error in {request.params.name}: {str(e)}")
 
 async def main_async():
     """Run the MCP server."""
