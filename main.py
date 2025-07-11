@@ -405,7 +405,8 @@ async def handle_list_tools() -> list[types.Tool]:
                 "type": "object",
                 "properties": {
                     "yaml_content": {"type": "string", "description": "YAML content for the workflow"},
-                    "workflow_data": {"type": "object", "description": "Structured workflow data"}
+                    "workflow_data": {"type": "object", "description": "Structured workflow data"},
+                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
                 }
             }
         ),
@@ -415,7 +416,8 @@ async def handle_list_tools() -> list[types.Tool]:
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "workflow_id": {"type": "string", "description": "The workflow ID"}
+                    "workflow_id": {"type": "string", "description": "The workflow ID"},
+                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
                 },
                 "required": ["workflow_id"]
             }
@@ -425,7 +427,9 @@ async def handle_list_tools() -> list[types.Tool]:
             description="List all workflows with formatted output",
             inputSchema={
                 "type": "object",
-                "properties": {}
+                "properties": {
+                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
+                }
             }
         ),
         types.Tool(
@@ -437,7 +441,8 @@ async def handle_list_tools() -> list[types.Tool]:
                     "workflow_id": {"type": "string", "description": "The workflow ID"},
                     "name": {"type": "string", "description": "New workflow name"},
                     "description": {"type": "string", "description": "New workflow description"},
-                    "version": {"type": "string", "description": "New workflow version"}
+                    "version": {"type": "string", "description": "New workflow version"},
+                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
                 },
                 "required": ["workflow_id"]
             }
@@ -448,7 +453,8 @@ async def handle_list_tools() -> list[types.Tool]:
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "workflow_id": {"type": "string", "description": "The workflow ID"}
+                    "workflow_id": {"type": "string", "description": "The workflow ID"},
+                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
                 },
                 "required": ["workflow_id"]
             }
@@ -459,7 +465,8 @@ async def handle_list_tools() -> list[types.Tool]:
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "workflow_id": {"type": "string", "description": "The workflow ID"}
+                    "workflow_id": {"type": "string", "description": "The workflow ID"},
+                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
                 },
                 "required": ["workflow_id"]
             }
@@ -470,7 +477,8 @@ async def handle_list_tools() -> list[types.Tool]:
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "yaml_content": {"type": "string", "description": "YAML content to validate"}
+                    "yaml_content": {"type": "string", "description": "YAML content to validate"},
+                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
                 },
                 "required": ["yaml_content"]
             }
@@ -484,7 +492,8 @@ async def handle_list_tools() -> list[types.Tool]:
                 "type": "object",
                 "properties": {
                     "workflow_id": {"type": "string", "description": "The workflow ID"},
-                    "inputs": {"type": "object", "description": "Input data for the workflow"}
+                    "inputs": {"type": "object", "description": "Input data for the workflow"},
+                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
                 },
                 "required": ["workflow_id"]
             }
@@ -495,7 +504,8 @@ async def handle_list_tools() -> list[types.Tool]:
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "workflow_id": {"type": "string", "description": "The workflow ID"}
+                    "workflow_id": {"type": "string", "description": "The workflow ID"},
+                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
                 },
                 "required": ["workflow_id"]
             }
@@ -508,7 +518,8 @@ async def handle_list_tools() -> list[types.Tool]:
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "execution_id": {"type": "string", "description": "The execution ID"}
+                    "execution_id": {"type": "string", "description": "The execution ID"},
+                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
                 },
                 "required": ["execution_id"]
             }
@@ -518,7 +529,9 @@ async def handle_list_tools() -> list[types.Tool]:
             description="List all executions with status indicators",
             inputSchema={
                 "type": "object",
-                "properties": {}
+                "properties": {
+                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
+                }
             }
         ),
         types.Tool(
@@ -527,7 +540,8 @@ async def handle_list_tools() -> list[types.Tool]:
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "execution_id": {"type": "string", "description": "The execution ID"}
+                    "execution_id": {"type": "string", "description": "The execution ID"},
+                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
                 },
                 "required": ["execution_id"]
             }
@@ -539,7 +553,8 @@ async def handle_list_tools() -> list[types.Tool]:
                 "type": "object",
                 "properties": {
                     "execution_id": {"type": "string", "description": "The execution ID"},
-                    "task_id": {"type": "string", "description": "The task ID"}
+                    "task_id": {"type": "string", "description": "The task ID"},
+                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
                 },
                 "required": ["execution_id", "task_id"]
             }
@@ -554,7 +569,8 @@ async def handle_list_tools() -> list[types.Tool]:
                     "page": {"type": "integer", "description": "Page number", "default": 1},
                     "per_page": {"type": "integer", "description": "Items per page", "default": 10},
                     "status": {"type": "string", "description": "Filter by status"},
-                    "include_logs": {"type": "boolean", "description": "Include log details", "default": True}
+                    "include_logs": {"type": "boolean", "description": "Include log details", "default": True},
+                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
                 },
                 "required": ["workflow_id"]
             }
@@ -574,7 +590,8 @@ async def handle_list_tools() -> list[types.Tool]:
                     "enabled": {"type": "boolean", "description": "Enable trigger", "default": True},
                     "description": {"type": "string", "description": "Trigger description"},
                     "config": {"type": "object", "description": "Trigger configuration"},
-                    "input_mapping": {"type": "object", "description": "Input mapping"}
+                    "input_mapping": {"type": "object", "description": "Input mapping"},
+                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
                 },
                 "required": ["name", "workflow_id", "trigger_type"]
             }
@@ -584,7 +601,9 @@ async def handle_list_tools() -> list[types.Tool]:
             description="List all triggers with status",
             inputSchema={
                 "type": "object",
-                "properties": {}
+                "properties": {
+                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
+                }
             }
         ),
         types.Tool(
@@ -593,7 +612,8 @@ async def handle_list_tools() -> list[types.Tool]:
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "trigger_id": {"type": "string", "description": "The trigger ID"}
+                    "trigger_id": {"type": "string", "description": "The trigger ID"},
+                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
                 },
                 "required": ["trigger_id"]
             }
@@ -604,7 +624,8 @@ async def handle_list_tools() -> list[types.Tool]:
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "workflow_id": {"type": "string", "description": "The workflow ID"}
+                    "workflow_id": {"type": "string", "description": "The workflow ID"},
+                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
                 },
                 "required": ["workflow_id"]
             }
@@ -619,7 +640,8 @@ async def handle_list_tools() -> list[types.Tool]:
                     "name": {"type": "string", "description": "New trigger name"},
                     "schedule": {"type": "string", "description": "New schedule"},
                     "enabled": {"type": "boolean", "description": "Enable/disable trigger"},
-                    "description": {"type": "string", "description": "New description"}
+                    "description": {"type": "string", "description": "New description"},
+                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
                 },
                 "required": ["trigger_id"]
             }
@@ -630,7 +652,8 @@ async def handle_list_tools() -> list[types.Tool]:
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "trigger_id": {"type": "string", "description": "The trigger ID"}
+                    "trigger_id": {"type": "string", "description": "The trigger ID"},
+                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
                 },
                 "required": ["trigger_id"]
             }
@@ -642,7 +665,8 @@ async def handle_list_tools() -> list[types.Tool]:
                 "type": "object",
                 "properties": {
                     "trigger_id": {"type": "string", "description": "The trigger ID"},
-                    "inputs": {"type": "object", "description": "Input data for the trigger"}
+                    "inputs": {"type": "object", "description": "Input data for the trigger"},
+                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
                 },
                 "required": ["trigger_id"]
             }
@@ -654,7 +678,9 @@ async def handle_list_tools() -> list[types.Tool]:
             description="Get worker system status",
             inputSchema={
                 "type": "object",
-                "properties": {}
+                "properties": {
+                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
+                }
             }
         ),
         types.Tool(
@@ -666,7 +692,8 @@ async def handle_list_tools() -> list[types.Tool]:
                     "execution_id": {"type": "string", "description": "The execution ID"},
                     "poll_interval": {"type": "integer", "description": "Polling interval in seconds", "default": 5},
                     "timeout": {"type": "integer", "description": "Timeout in seconds", "default": 300},
-                    "show_logs": {"type": "boolean", "description": "Show real-time logs", "default": False}
+                    "show_logs": {"type": "boolean", "description": "Show real-time logs", "default": False},
+                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
                 },
                 "required": ["execution_id"]
             }
@@ -679,37 +706,52 @@ async def handle_call_tool(name: str, arguments: dict) -> list[types.TextContent
     if not workflow_client:
         return [types.TextContent(type="text", text="Error: Workflow client not initialized")]
     
+    # Extract format_response argument with default True
+    format_response = arguments.get("format_response", True)
+    
     try:
         # Core Workflow Management
         if name == "create_workflow":
             yaml_content = arguments.get("yaml_content")
             workflow_data = arguments.get("workflow_data")
             result = await workflow_client.create_workflow(yaml_content, workflow_data)
-            formatted = workflow_client._format_response(result, "Workflow Created Successfully")
-            return [types.TextContent(type="text", text=formatted)]
+            
+            if format_response:
+                formatted = workflow_client._format_response(result, "Workflow Created Successfully")
+                return [types.TextContent(type="text", text=formatted)]
+            else:
+                return [types.TextContent(type="text", text=json.dumps(result, indent=2))]
         
         elif name == "get_workflow":
             workflow_id = arguments["workflow_id"]
             result = await workflow_client.get_workflow(workflow_id)
-            formatted = workflow_client._format_response(result, f"Workflow Details: {workflow_id}")
-            return [types.TextContent(type="text", text=formatted)]
+            
+            if format_response:
+                formatted = workflow_client._format_response(result, f"Workflow Details: {workflow_id}")
+                return [types.TextContent(type="text", text=formatted)]
+            else:
+                return [types.TextContent(type="text", text=json.dumps(result, indent=2))]
         
         elif name == "get_all_workflows":
             result = await workflow_client.get_all_workflows()
-            formatted = "=== All Workflows ===\n"
-            if isinstance(result, list):
-                formatted += f"📋 **Found {len(result)} workflows:**\n\n"
-                for workflow in result:
-                    name = workflow.get('name', 'Unnamed')
-                    workflow_id = workflow.get('id', 'No ID')
-                    description = workflow.get('description', 'No description')
-                    version = workflow.get('version', 'Unknown')
-                    formatted += f"• **{name}** (`{workflow_id}`)\n"
-                    formatted += f"  Version: {version}\n"
-                    formatted += f"  Description: {description}\n\n"
             
-            formatted += f"\n**Raw Data:**\n```json\n{json.dumps(result, indent=2)}\n```"
-            return [types.TextContent(type="text", text=formatted)]
+            if format_response:
+                formatted = "=== All Workflows ===\n"
+                if isinstance(result, list):
+                    formatted += f"📋 **Found {len(result)} workflows:**\n\n"
+                    for workflow in result:
+                        name = workflow.get('name', 'Unnamed')
+                        workflow_id = workflow.get('id', 'No ID')
+                        description = workflow.get('description', 'No description')
+                        version = workflow.get('version', 'Unknown')
+                        formatted += f"• **{name}** (`{workflow_id}`)\n"
+                        formatted += f"  Version: {version}\n"
+                        formatted += f"  Description: {description}\n\n"
+                
+                formatted += f"\n**Raw Data:**\n```json\n{json.dumps(result, indent=2)}\n```"
+                return [types.TextContent(type="text", text=formatted)]
+            else:
+                return [types.TextContent(type="text", text=json.dumps(result, indent=2))]
         
         elif name == "update_workflow":
             workflow_id = arguments["workflow_id"]
@@ -717,26 +759,42 @@ async def handle_call_tool(name: str, arguments: dict) -> list[types.TextContent
             description = arguments.get("description")
             version = arguments.get("version")
             result = await workflow_client.update_workflow(workflow_id, name, description, version)
-            formatted = workflow_client._format_response(result, f"Workflow Updated: {workflow_id}")
-            return [types.TextContent(type="text", text=formatted)]
+            
+            if format_response:
+                formatted = workflow_client._format_response(result, f"Workflow Updated: {workflow_id}")
+                return [types.TextContent(type="text", text=formatted)]
+            else:
+                return [types.TextContent(type="text", text=json.dumps(result, indent=2))]
         
         elif name == "delete_workflow":
             workflow_id = arguments["workflow_id"]
             result = await workflow_client.delete_workflow(workflow_id)
-            formatted = f"⚠️ **Workflow Deleted Successfully**\n\nWorkflow ID: {workflow_id}\n\n{json.dumps(result, indent=2)}"
-            return [types.TextContent(type="text", text=formatted)]
+            
+            if format_response:
+                formatted = f"⚠️ **Workflow Deleted Successfully**\n\nWorkflow ID: {workflow_id}\n\n{json.dumps(result, indent=2)}"
+                return [types.TextContent(type="text", text=formatted)]
+            else:
+                return [types.TextContent(type="text", text=json.dumps(result, indent=2))]
         
         elif name == "get_workflow_dashboard":
             workflow_id = arguments["workflow_id"]
             result = await workflow_client.get_workflow_dashboard(workflow_id)
-            formatted = workflow_client._format_response(result, f"Workflow Dashboard: {workflow_id}")
-            return [types.TextContent(type="text", text=formatted)]
+            
+            if format_response:
+                formatted = workflow_client._format_response(result, f"Workflow Dashboard: {workflow_id}")
+                return [types.TextContent(type="text", text=formatted)]
+            else:
+                return [types.TextContent(type="text", text=json.dumps(result, indent=2))]
         
         elif name == "validate_workflow_yaml":
             yaml_content = arguments["yaml_content"]
             result = await workflow_client.validate_workflow_yaml(yaml_content)
-            formatted = f"✅ **YAML Validation Result**\n\n{json.dumps(result, indent=2)}"
-            return [types.TextContent(type="text", text=formatted)]
+            
+            if format_response:
+                formatted = f"✅ **YAML Validation Result**\n\n{json.dumps(result, indent=2)}"
+                return [types.TextContent(type="text", text=formatted)]
+            else:
+                return [types.TextContent(type="text", text=json.dumps(result, indent=2))]
         
         # Workflow Execution
         elif name == "execute_workflow":
@@ -744,119 +802,138 @@ async def handle_call_tool(name: str, arguments: dict) -> list[types.TextContent
             inputs = arguments.get("inputs")
             result = await workflow_client.execute_workflow(workflow_id, inputs)
             
-            execution_id = result.get("execution_id", "Unknown")
-            status = result.get("status", "Unknown")
-            
-            formatted = f"🚀 **Workflow Execution Started**\n\n"
-            formatted += f"• Execution ID: `{execution_id}`\n"
-            formatted += f"• Status: {status}\n"
-            formatted += f"• Workflow ID: {workflow_id}\n\n"
-            formatted += f"**Full Response:**\n```json\n{json.dumps(result, indent=2)}\n```"
-            
-            return [types.TextContent(type="text", text=formatted)]
+            if format_response:
+                execution_id = result.get("execution_id", "Unknown")
+                status = result.get("status", "Unknown")
+                
+                formatted = f"🚀 **Workflow Execution Started**\n\n"
+                formatted += f"• Execution ID: `{execution_id}`\n"
+                formatted += f"• Status: {status}\n"
+                formatted += f"• Workflow ID: {workflow_id}\n\n"
+                formatted += f"**Full Response:**\n```json\n{json.dumps(result, indent=2)}\n```"
+                return [types.TextContent(type="text", text=formatted)]
+            else:
+                return [types.TextContent(type="text", text=json.dumps(result, indent=2))]
         
         elif name == "get_workflow_input_format":
             workflow_id = arguments["workflow_id"]
             result = await workflow_client.get_workflow_input_format(workflow_id)
             
-            # Extract input format from workflow_data.inputs
-            try:
-                input_format = result.get("data", {}).get("workflow_data", {}).get("inputs", {})
-                if not input_format:
-                    input_format = result.get("inputs", {})
-                
-                if not input_format:
-                    input_format = "No input format found for this workflow"
-                
-                formatted = f"📝 **Workflow Input Format: {workflow_id}**\n\n"
-                if isinstance(input_format, dict) or isinstance(input_format, list):
-                    formatted += f"```json\n{json.dumps(input_format, indent=2)}\n```"
-                else:
-                    formatted += str(input_format)
-                
-                return [types.TextContent(type="text", text=formatted)]
-            except Exception as e:
-                formatted = f"❌ **Error extracting input format:** {str(e)}\n\n**Full response:**\n```json\n{json.dumps(result, indent=2)}\n```"
-                return [types.TextContent(type="text", text=formatted)]
+            if format_response:
+                # Extract input format from workflow_data.inputs
+                try:
+                    input_format = result.get("data", {}).get("workflow_data", {}).get("inputs", {})
+                    if not input_format:
+                        input_format = result.get("inputs", {})
+                    
+                    if not input_format:
+                        input_format = "No input format found for this workflow"
+                    
+                    formatted = f"📝 **Workflow Input Format: {workflow_id}**\n\n"
+                    if isinstance(input_format, dict) or isinstance(input_format, list):
+                        formatted += f"```json\n{json.dumps(input_format, indent=2)}\n```"
+                    else:
+                        formatted += str(input_format)
+                    
+                    return [types.TextContent(type="text", text=formatted)]
+                except Exception as e:
+                    formatted = f"❌ **Error extracting input format:** {str(e)}\n\n**Full response:**\n```json\n{json.dumps(result, indent=2)}\n```"
+                    return [types.TextContent(type="text", text=formatted)]
+            else:
+                return [types.TextContent(type="text", text=json.dumps(result, indent=2))]
         
         # Execution Monitoring
         elif name == "get_execution_status":
             execution_id = arguments["execution_id"]
             result = await workflow_client.get_execution_status(execution_id)
             
-            status = result.get("status", "Unknown")
-            workflow_name = result.get("workflow_name", "Unknown")
-            started_at = result.get("started_at", "Unknown")
-            ended_at = result.get("ended_at", "Not finished")
-            
-            formatted = f"📊 **Execution Status: {execution_id}**\n\n"
-            formatted += f"• Status: **{status}**\n"
-            formatted += f"• Workflow: {workflow_name}\n"
-            formatted += f"• Started: {started_at}\n"
-            formatted += f"• Ended: {ended_at}\n\n"
-            
-            # Add task summary if available
-            execution_data = result.get("execution_data", {})
-            if "outputs" in execution_data:
-                outputs = execution_data["outputs"]
-                formatted += f"📋 **Tasks ({len(outputs)} total):**\n"
-                for task_id, task_output in outputs.items():
-                    task_status = task_output.get("status", "Unknown")
-                    status_icon = "✅" if task_status == "SUCCESS" else "❌" if task_status == "FAILED" else "⏳"
-                    formatted += f"   {status_icon} {task_id}: {task_status}\n"
-                formatted += "\n"
-            
-            formatted += f"**Raw Data:**\n```json\n{json.dumps(result, indent=2)}\n```"
-            return [types.TextContent(type="text", text=formatted)]
+            if format_response:
+                status = result.get("status", "Unknown")
+                workflow_name = result.get("workflow_name", "Unknown")
+                started_at = result.get("started_at", "Unknown")
+                ended_at = result.get("ended_at", "Not finished")
+                
+                formatted = f"📊 **Execution Status: {execution_id}**\n\n"
+                formatted += f"• Status: **{status}**\n"
+                formatted += f"• Workflow: {workflow_name}\n"
+                formatted += f"• Started: {started_at}\n"
+                formatted += f"• Ended: {ended_at}\n\n"
+                
+                # Add task summary if available
+                execution_data = result.get("execution_data", {})
+                if "outputs" in execution_data:
+                    outputs = execution_data["outputs"]
+                    formatted += f"📋 **Tasks ({len(outputs)} total):**\n"
+                    for task_id, task_output in outputs.items():
+                        task_status = task_output.get("status", "Unknown")
+                        status_icon = "✅" if task_status == "SUCCESS" else "❌" if task_status == "FAILED" else "⏳"
+                        formatted += f"   {status_icon} {task_id}: {task_status}\n"
+                    formatted += "\n"
+                
+                formatted += f"**Raw Data:**\n```json\n{json.dumps(result, indent=2)}\n```"
+                return [types.TextContent(type="text", text=formatted)]
+            else:
+                return [types.TextContent(type="text", text=json.dumps(result, indent=2))]
         
         elif name == "get_all_executions":
             result = await workflow_client.get_all_executions()
-            formatted = "=== All Executions ===\n"
-            if isinstance(result, list):
-                formatted += f"📋 **Found {len(result)} executions:**\n\n"
-                for execution in result:
-                    exec_id = execution.get('id', 'No ID')
-                    status = execution.get('status', 'Unknown')
-                    workflow_name = execution.get('workflow_name', 'Unknown')
-                    started_at = execution.get('started_at', 'Unknown')
-                    
-                    status_icon = "✅" if status == "COMPLETED" else "❌" if status == "FAILED" else "⏳"
-                    formatted += f"{status_icon} **{exec_id[:8]}...** ({workflow_name})\n"
-                    formatted += f"   Status: {status} | Started: {started_at}\n\n"
             
-            formatted += f"\n**Raw Data:**\n```json\n{json.dumps(result, indent=2)}\n```"
-            return [types.TextContent(type="text", text=formatted)]
+            if format_response:
+                formatted = "=== All Executions ===\n"
+                if isinstance(result, list):
+                    formatted += f"📋 **Found {len(result)} executions:**\n\n"
+                    for execution in result:
+                        exec_id = execution.get('id', 'No ID')
+                        status = execution.get('status', 'Unknown')
+                        workflow_name = execution.get('workflow_name', 'Unknown')
+                        started_at = execution.get('started_at', 'Unknown')
+                        
+                        status_icon = "✅" if status == "COMPLETED" else "❌" if status == "FAILED" else "⏳"
+                        formatted += f"{status_icon} **{exec_id[:8]}...** ({workflow_name})\n"
+                        formatted += f"   Status: {status} | Started: {started_at}\n\n"
+                
+                formatted += f"\n**Raw Data:**\n```json\n{json.dumps(result, indent=2)}\n```"
+                return [types.TextContent(type="text", text=formatted)]
+            else:
+                return [types.TextContent(type="text", text=json.dumps(result, indent=2))]
         
         elif name == "get_execution_logs":
             execution_id = arguments["execution_id"]
             result = await workflow_client.get_execution_logs(execution_id)
-            formatted = workflow_client._format_response(result, f"Execution Logs: {execution_id}")
-            return [types.TextContent(type="text", text=formatted)]
+            
+            if format_response:
+                formatted = workflow_client._format_response(result, f"Execution Logs: {execution_id}")
+                return [types.TextContent(type="text", text=formatted)]
+            else:
+                return [types.TextContent(type="text", text=json.dumps(result, indent=2))]
         
         elif name == "get_task_output":
             execution_id = arguments["execution_id"]
             task_id = arguments["task_id"]
             result = await workflow_client.get_task_output(execution_id, task_id)
             
-            task_output = result.get("task_output", {})
-            status = task_output.get("status", "Unknown")
-            return_code = task_output.get("return_code", "N/A")
-            output = task_output.get("output", "No output")
-            
-            formatted = f"🔧 **Task Output: {task_id}**\n\n"
-            formatted += f"• Execution ID: {execution_id}\n"
-            formatted += f"• Status: **{status}**\n"
-            formatted += f"• Return Code: {return_code}\n"
-            formatted += f"• Output Preview: {output[:200]}{'...' if len(output) > 200 else ''}\n\n"
-            
-            execution_details = task_output.get("execution_details", {})
-            if execution_details:
-                formatted += f"**Execution Details:**\n"
-                formatted += f"• Worker Executed: {execution_details.get('worker_executed', 'N/A')}\n"
-                formatted += f"• Message Sent: {execution_details.get('message_sent', 'N/A')}\n\n"
-            
-            formatted += f"**Raw Data:**\n```json\n{json.dumps(result, indent=2)}\n```"
-            return [types.TextContent(type="text", text=formatted)]
+            if format_response:
+                task_output = result.get("task_output", {})
+                status = task_output.get("status", "Unknown")
+                return_code = task_output.get("return_code", "N/A")
+                output = task_output.get("output", "No output")
+                
+                formatted = f"🔧 **Task Output: {task_id}**\n\n"
+                formatted += f"• Execution ID: {execution_id}\n"
+                formatted += f"• Status: **{status}**\n"
+                formatted += f"• Return Code: {return_code}\n"
+                formatted += f"• Output Preview: {output[:200]}{'...' if len(output) > 200 else ''}\n\n"
+                
+                execution_details = task_output.get("execution_details", {})
+                if execution_details:
+                    formatted += f"**Execution Details:**\n"
+                    formatted += f"• Worker Executed: {execution_details.get('worker_executed', 'N/A')}\n"
+                    formatted += f"• Message Sent: {execution_details.get('message_sent', 'N/A')}\n\n"
+                
+                formatted += f"**Raw Data:**\n```json\n{json.dumps(result, indent=2)}\n```"
+                return [types.TextContent(type="text", text=formatted)]
+            else:
+                return [types.TextContent(type="text", text=json.dumps(result, indent=2))]
         
         elif name == "get_workflow_execution_logs":
             workflow_id = arguments["workflow_id"]
@@ -866,8 +943,12 @@ async def handle_call_tool(name: str, arguments: dict) -> list[types.TextContent
             include_logs = arguments.get("include_logs", True)
             
             result = await workflow_client.get_workflow_execution_logs(workflow_id, page, per_page, status, include_logs)
-            formatted = workflow_client._format_response(result, f"Workflow Execution Logs: {workflow_id}")
-            return [types.TextContent(type="text", text=formatted)]
+            
+            if format_response:
+                formatted = workflow_client._format_response(result, f"Workflow Execution Logs: {workflow_id}")
+                return [types.TextContent(type="text", text=formatted)]
+            else:
+                return [types.TextContent(type="text", text=json.dumps(result, indent=2))]
         
         # Trigger Management
         elif name == "create_trigger":
@@ -883,39 +964,55 @@ async def handle_call_tool(name: str, arguments: dict) -> list[types.TextContent
             result = await workflow_client.create_trigger(
                 name, workflow_id, trigger_type, schedule, enabled, description, config, input_mapping
             )
-            formatted = workflow_client._format_response(result, "Trigger Created Successfully")
-            return [types.TextContent(type="text", text=formatted)]
+            
+            if format_response:
+                formatted = workflow_client._format_response(result, "Trigger Created Successfully")
+                return [types.TextContent(type="text", text=formatted)]
+            else:
+                return [types.TextContent(type="text", text=json.dumps(result, indent=2))]
         
         elif name == "get_all_triggers":
             result = await workflow_client.get_all_triggers()
-            formatted = "=== All Triggers ===\n"
-            if isinstance(result, list):
-                formatted += f"🔗 **Found {len(result)} triggers:**\n\n"
-                for trigger in result:
-                    name = trigger.get('name', 'Unnamed')
-                    trigger_id = trigger.get('id', 'No ID')
-                    trigger_type = trigger.get('trigger_type', 'Unknown')
-                    enabled = "🟢 Enabled" if trigger.get('enabled') else "🔴 Disabled"
-                    workflow_name = trigger.get('workflow_name', 'Unknown Workflow')
-                    
-                    formatted += f"• **{name}** (`{trigger_id}`)\n"
-                    formatted += f"  Type: {trigger_type} | Status: {enabled}\n"
-                    formatted += f"  Workflow: {workflow_name}\n\n"
             
-            formatted += f"\n**Raw Data:**\n```json\n{json.dumps(result, indent=2)}\n```"
-            return [types.TextContent(type="text", text=formatted)]
+            if format_response:
+                formatted = "=== All Triggers ===\n"
+                if isinstance(result, list):
+                    formatted += f"🔗 **Found {len(result)} triggers:**\n\n"
+                    for trigger in result:
+                        name = trigger.get('name', 'Unnamed')
+                        trigger_id = trigger.get('id', 'No ID')
+                        trigger_type = trigger.get('trigger_type', 'Unknown')
+                        enabled = "🟢 Enabled" if trigger.get('enabled') else "🔴 Disabled"
+                        workflow_name = trigger.get('workflow_name', 'Unknown Workflow')
+                        
+                        formatted += f"• **{name}** (`{trigger_id}`)\n"
+                        formatted += f"  Type: {trigger_type} | Status: {enabled}\n"
+                        formatted += f"  Workflow: {workflow_name}\n\n"
+                
+                formatted += f"\n**Raw Data:**\n```json\n{json.dumps(result, indent=2)}\n```"
+                return [types.TextContent(type="text", text=formatted)]
+            else:
+                return [types.TextContent(type="text", text=json.dumps(result, indent=2))]
         
         elif name == "get_trigger":
             trigger_id = arguments["trigger_id"]
             result = await workflow_client.get_trigger(trigger_id)
-            formatted = workflow_client._format_response(result, f"Trigger Details: {trigger_id}")
-            return [types.TextContent(type="text", text=formatted)]
+            
+            if format_response:
+                formatted = workflow_client._format_response(result, f"Trigger Details: {trigger_id}")
+                return [types.TextContent(type="text", text=formatted)]
+            else:
+                return [types.TextContent(type="text", text=json.dumps(result, indent=2))]
         
         elif name == "get_workflow_triggers":
             workflow_id = arguments["workflow_id"]
             result = await workflow_client.get_workflow_triggers(workflow_id)
-            formatted = workflow_client._format_response(result, f"Triggers for Workflow: {workflow_id}")
-            return [types.TextContent(type="text", text=formatted)]
+            
+            if format_response:
+                formatted = workflow_client._format_response(result, f"Triggers for Workflow: {workflow_id}")
+                return [types.TextContent(type="text", text=formatted)]
+            else:
+                return [types.TextContent(type="text", text=json.dumps(result, indent=2))]
         
         elif name == "update_trigger":
             trigger_id = arguments["trigger_id"]
@@ -925,36 +1022,50 @@ async def handle_call_tool(name: str, arguments: dict) -> list[types.TextContent
             description = arguments.get("description")
             
             result = await workflow_client.update_trigger(trigger_id, name, schedule, enabled, description)
-            formatted = workflow_client._format_response(result, f"Trigger Updated: {trigger_id}")
-            return [types.TextContent(type="text", text=formatted)]
+            
+            if format_response:
+                formatted = workflow_client._format_response(result, f"Trigger Updated: {trigger_id}")
+                return [types.TextContent(type="text", text=formatted)]
+            else:
+                return [types.TextContent(type="text", text=json.dumps(result, indent=2))]
         
         elif name == "delete_trigger":
             trigger_id = arguments["trigger_id"]
             result = await workflow_client.delete_trigger(trigger_id)
-            formatted = f"⚠️ **Trigger Deleted Successfully**\n\nTrigger ID: {trigger_id}\n\n{json.dumps(result, indent=2)}"
-            return [types.TextContent(type="text", text=formatted)]
+            
+            if format_response:
+                formatted = f"⚠️ **Trigger Deleted Successfully**\n\nTrigger ID: {trigger_id}\n\n{json.dumps(result, indent=2)}"
+                return [types.TextContent(type="text", text=formatted)]
+            else:
+                return [types.TextContent(type="text", text=json.dumps(result, indent=2))]
         
         elif name == "execute_trigger":
             trigger_id = arguments["trigger_id"]
             inputs = arguments.get("inputs")
             result = await workflow_client.execute_trigger(trigger_id, inputs)
             
-            execution_id = result.get("execution_id", "Unknown")
-            status = result.get("status", "Unknown")
-            
-            formatted = f"🔗 **Trigger Executed**\n\n"
-            formatted += f"• Trigger ID: {trigger_id}\n"
-            formatted += f"• Execution ID: `{execution_id}`\n"
-            formatted += f"• Status: {status}\n\n"
-            formatted += f"**Full Response:**\n```json\n{json.dumps(result, indent=2)}\n```"
-            
-            return [types.TextContent(type="text", text=formatted)]
+            if format_response:
+                execution_id = result.get("execution_id", "Unknown")
+                status = result.get("status", "Unknown")
+                
+                formatted = f"🔗 **Trigger Executed**\n\n"
+                formatted += f"• Trigger ID: {trigger_id}\n"
+                formatted += f"• Execution ID: `{execution_id}`\n"
+                formatted += f"• Status: {status}\n\n"
+                formatted += f"**Full Response:**\n```json\n{json.dumps(result, indent=2)}\n```"
+                return [types.TextContent(type="text", text=formatted)]
+            else:
+                return [types.TextContent(type="text", text=json.dumps(result, indent=2))]
         
         # System & Monitoring
         elif name == "get_workers_status":
             result = await workflow_client.get_workers_status()
-            formatted = workflow_client._format_response(result, "Workers Status")
-            return [types.TextContent(type="text", text=formatted)]
+            
+            if format_response:
+                formatted = workflow_client._format_response(result, "Workers Status")
+                return [types.TextContent(type="text", text=formatted)]
+            else:
+                return [types.TextContent(type="text", text=json.dumps(result, indent=2))]
         
         elif name == "wait_for_execution_completion":
             execution_id = arguments["execution_id"]
@@ -964,23 +1075,26 @@ async def handle_call_tool(name: str, arguments: dict) -> list[types.TextContent
             
             result = await workflow_client.wait_for_execution_completion(execution_id, poll_interval, timeout, show_logs)
             
-            formatted = f"⏳ **Execution Completion Result**\n\n"
-            formatted += f"• Execution ID: {execution_id}\n"
-            formatted += f"• Poll Interval: {poll_interval} seconds\n"
-            formatted += f"• Timeout: {timeout} seconds\n"
-            formatted += f"• Show Logs: {show_logs}\n\n"
-            
-            if result.get("status") == "finished":
-                formatted += f"✅ **Execution Finished: {result.get('final_status')}**\n\n"
+            if format_response:
+                formatted = f"⏳ **Execution Completion Result**\n\n"
+                formatted += f"• Execution ID: {execution_id}\n"
+                formatted += f"• Poll Interval: {poll_interval} seconds\n"
+                formatted += f"• Timeout: {timeout} seconds\n"
+                formatted += f"• Show Logs: {show_logs}\n\n"
+                
+                if result.get("status") == "finished":
+                    formatted += f"✅ **Execution Finished: {result.get('final_status')}**\n\n"
+                else:
+                    formatted += f"⏰ **Timeout Reached**\n\n"
+                
+                formatted += "**Status Updates:**\n"
+                for update in result.get("status_updates", []):
+                    formatted += f"{update}\n"
+                
+                formatted += f"\n**Raw Data:**\n```json\n{json.dumps(result, indent=2)}\n```"
+                return [types.TextContent(type="text", text=formatted)]
             else:
-                formatted += f"⏰ **Timeout Reached**\n\n"
-            
-            formatted += "**Status Updates:**\n"
-            for update in result.get("status_updates", []):
-                formatted += f"{update}\n"
-            
-            formatted += f"\n**Raw Data:**\n```json\n{json.dumps(result, indent=2)}\n```"
-            return [types.TextContent(type="text", text=formatted)]
+                return [types.TextContent(type="text", text=json.dumps(result, indent=2))]
         
         else:
             return [types.TextContent(type="text", text=f"Unknown tool: {name}")]
@@ -1021,4 +1135,3 @@ def run():
     except Exception as error:
         print(f"Fatal error in main(): {error}", file=sys.stderr)
         sys.exit(1)
-
