@@ -11,6 +11,7 @@ import json
 import logging
 import sys
 import time
+import argparse
 from typing import Dict, Optional, Any
 from mcp.server import Server, NotificationOptions
 from mcp.server.models import InitializationOptions
@@ -382,6 +383,9 @@ server = Server("workflow-engine-mcp-server")
 # Global client instance
 workflow_client: Optional[WorkflowClient] = None
 
+# Global read-only mode flag
+READ_ONLY_MODE = False
+
 def initialize_client():
     """Initialize the Workflow client"""
     global workflow_client
@@ -396,20 +400,10 @@ def initialize_client():
 @server.list_tools()
 async def handle_list_tools() -> list[types.Tool]:
     """List available Workflow tools"""
-    return [
-        # Core Workflow Management
-        types.Tool(
-            name="create_workflow",
-            description="Create workflows using YAML content or structured data",
-            inputSchema={
-                "type": "object",
-                "properties": {
-                    "yaml_content": {"type": "string", "description": "YAML content for the workflow"},
-                    "workflow_data": {"type": "object", "description": "Structured workflow data"},
-                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
-                }
-            }
-        ),
+    
+    # Define all tools
+    all_tools = [
+        # Core Workflow Management - READ OPERATIONS
         types.Tool(
             name="get_workflow",
             description="Get detailed workflow info with execution statistics",
@@ -433,66 +427,12 @@ async def handle_list_tools() -> list[types.Tool]:
             }
         ),
         types.Tool(
-            name="update_workflow",
-            description="Update workflow metadata (name, description, version)",
-            inputSchema={
-                "type": "object",
-                "properties": {
-                    "workflow_id": {"type": "string", "description": "The workflow ID"},
-                    "name": {"type": "string", "description": "New workflow name"},
-                    "description": {"type": "string", "description": "New workflow description"},
-                    "version": {"type": "string", "description": "New workflow version"},
-                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
-                },
-                "required": ["workflow_id"]
-            }
-        ),
-        types.Tool(
-            name="delete_workflow",
-            description="Delete workflows (permanent)",
-            inputSchema={
-                "type": "object",
-                "properties": {
-                    "workflow_id": {"type": "string", "description": "The workflow ID"},
-                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
-                },
-                "required": ["workflow_id"]
-            }
-        ),
-        types.Tool(
             name="get_workflow_dashboard",
             description="Get comprehensive analytics dashboard",
             inputSchema={
                 "type": "object",
                 "properties": {
                     "workflow_id": {"type": "string", "description": "The workflow ID"},
-                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
-                },
-                "required": ["workflow_id"]
-            }
-        ),
-        types.Tool(
-            name="validate_workflow_yaml",
-            description="Validate YAML before creation",
-            inputSchema={
-                "type": "object",
-                "properties": {
-                    "yaml_content": {"type": "string", "description": "YAML content to validate"},
-                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
-                },
-                "required": ["yaml_content"]
-            }
-        ),
-        
-        # Workflow Execution
-        types.Tool(
-            name="execute_workflow",
-            description="Execute workflows with custom inputs",
-            inputSchema={
-                "type": "object",
-                "properties": {
-                    "workflow_id": {"type": "string", "description": "The workflow ID"},
-                    "inputs": {"type": "object", "description": "Input data for the workflow"},
                     "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
                 },
                 "required": ["workflow_id"]
@@ -511,7 +451,7 @@ async def handle_list_tools() -> list[types.Tool]:
             }
         ),
         
-        # Execution Monitoring
+        # Execution Monitoring - READ OPERATIONS
         types.Tool(
             name="get_execution_status",
             description="Get execution status with task breakdown",
@@ -576,26 +516,7 @@ async def handle_list_tools() -> list[types.Tool]:
             }
         ),
         
-        # Trigger Management
-        types.Tool(
-            name="create_trigger",
-            description="Create automation triggers (scheduled, manual, webhook)",
-            inputSchema={
-                "type": "object",
-                "properties": {
-                    "name": {"type": "string", "description": "Trigger name"},
-                    "workflow_id": {"type": "string", "description": "The workflow ID"},
-                    "trigger_type": {"type": "string", "description": "Type of trigger"},
-                    "schedule": {"type": "string", "description": "Cron schedule (optional)"},
-                    "enabled": {"type": "boolean", "description": "Enable trigger", "default": True},
-                    "description": {"type": "string", "description": "Trigger description"},
-                    "config": {"type": "object", "description": "Trigger configuration"},
-                    "input_mapping": {"type": "object", "description": "Input mapping"},
-                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
-                },
-                "required": ["name", "workflow_id", "trigger_type"]
-            }
-        ),
+        # Trigger Management - READ OPERATIONS
         types.Tool(
             name="get_all_triggers",
             description="List all triggers with status",
@@ -628,6 +549,110 @@ async def handle_list_tools() -> list[types.Tool]:
                     "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
                 },
                 "required": ["workflow_id"]
+            }
+        ),
+        
+        # System & Monitoring - READ OPERATIONS
+        types.Tool(
+            name="get_workers_status",
+            description="Get worker system status",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
+                }
+            }
+        ),
+    ]
+    
+    # Define write/modify operations (only available when not in read-only mode)
+    write_tools = [
+        # Core Workflow Management - WRITE OPERATIONS
+        types.Tool(
+            name="create_workflow",
+            description="Create workflows using YAML content or structured data",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "yaml_content": {"type": "string", "description": "YAML content for the workflow"},
+                    "workflow_data": {"type": "object", "description": "Structured workflow data"},
+                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
+                }
+            }
+        ),
+        types.Tool(
+            name="update_workflow",
+            description="Update workflow metadata (name, description, version)",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "workflow_id": {"type": "string", "description": "The workflow ID"},
+                    "name": {"type": "string", "description": "New workflow name"},
+                    "description": {"type": "string", "description": "New workflow description"},
+                    "version": {"type": "string", "description": "New workflow version"},
+                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
+                },
+                "required": ["workflow_id"]
+            }
+        ),
+        types.Tool(
+            name="delete_workflow",
+            description="Delete workflows (permanent)",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "workflow_id": {"type": "string", "description": "The workflow ID"},
+                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
+                },
+                "required": ["workflow_id"]
+            }
+        ),
+        types.Tool(
+            name="validate_workflow_yaml",
+            description="Validate YAML before creation",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "yaml_content": {"type": "string", "description": "YAML content to validate"},
+                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
+                },
+                "required": ["yaml_content"]
+            }
+        ),
+        
+        # Workflow Execution - WRITE OPERATIONS
+        types.Tool(
+            name="execute_workflow",
+            description="Execute workflows with custom inputs",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "workflow_id": {"type": "string", "description": "The workflow ID"},
+                    "inputs": {"type": "object", "description": "Input data for the workflow"},
+                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
+                },
+                "required": ["workflow_id"]
+            }
+        ),
+        
+        # Trigger Management - WRITE OPERATIONS
+        types.Tool(
+            name="create_trigger",
+            description="Create automation triggers (scheduled, manual, webhook)",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "name": {"type": "string", "description": "Trigger name"},
+                    "workflow_id": {"type": "string", "description": "The workflow ID"},
+                    "trigger_type": {"type": "string", "description": "Type of trigger"},
+                    "schedule": {"type": "string", "description": "Cron schedule (optional)"},
+                    "enabled": {"type": "boolean", "description": "Enable trigger", "default": True},
+                    "description": {"type": "string", "description": "Trigger description"},
+                    "config": {"type": "object", "description": "Trigger configuration"},
+                    "input_mapping": {"type": "object", "description": "Input mapping"},
+                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
+                },
+                "required": ["name", "workflow_id", "trigger_type"]
             }
         ),
         types.Tool(
@@ -672,17 +697,7 @@ async def handle_list_tools() -> list[types.Tool]:
             }
         ),
         
-        # System & Monitoring
-        types.Tool(
-            name="get_workers_status",
-            description="Get worker system status",
-            inputSchema={
-                "type": "object",
-                "properties": {
-                    "format_response": {"type": "boolean", "description": "Format the response for readability", "default": True}
-                }
-            }
-        ),
+        # System & Monitoring - WRITE OPERATIONS
         types.Tool(
             name="wait_for_execution_completion",
             description="Wait for execution with real-time monitoring",
@@ -699,12 +714,31 @@ async def handle_list_tools() -> list[types.Tool]:
             }
         )
     ]
+    
+    # Return only read operations if in read-only mode
+    if READ_ONLY_MODE:
+        return all_tools
+    else:
+        return all_tools + write_tools
 
 @server.call_tool()
 async def handle_call_tool(name: str, arguments: dict) -> list[types.TextContent]:
     """Handle tool calls"""
     if not workflow_client:
         return [types.TextContent(type="text", text="Error: Workflow client not initialized")]
+    
+    # Check if write operation is attempted in read-only mode
+    write_operations = {
+        "create_workflow", "update_workflow", "delete_workflow", "validate_workflow_yaml",
+        "execute_workflow", "create_trigger", "update_trigger", "delete_trigger", 
+        "execute_trigger", "wait_for_execution_completion"
+    }
+    
+    if READ_ONLY_MODE and name in write_operations:
+        return [types.TextContent(
+            type="text", 
+            text=f"❌ **Read-Only Mode Active**\n\nOperation '{name}' is not allowed in read-only mode. Only 'get_*' operations are permitted."
+        )]
     
     # Extract format_response argument with default True
     format_response = arguments.get("format_response", True)
@@ -1106,6 +1140,26 @@ async def handle_call_tool(name: str, arguments: dict) -> list[types.TextContent
 
 async def main():
     """Main function to run the MCP server"""
+    global READ_ONLY_MODE
+    
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(description="Workflow Engine MCP Server")
+    parser.add_argument(
+        "--read-only", 
+        action="store_true", 
+        help="Run server in read-only mode (only allows 'get_*' operations)"
+    )
+    
+    args = parser.parse_args()
+    READ_ONLY_MODE = args.read_only
+    
+    if READ_ONLY_MODE:
+        logging.info("🔒 Starting Workflow MCP Server in READ-ONLY mode")
+        print("🔒 Starting Workflow MCP Server in READ-ONLY mode", file=sys.stderr)
+    else:
+        logging.info("🔓 Starting Workflow MCP Server with FULL access")
+        print("🔓 Starting Workflow MCP Server with FULL access", file=sys.stderr)
+    
     # Initialize the Workflow client
     try:
         initialize_client()
